@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MpWeiXinCore.Models.CustomerServices
+﻿namespace MpWeiXinCore.Models.CustomerServices
 {
     /// <summary>
     /// 客服文本消息

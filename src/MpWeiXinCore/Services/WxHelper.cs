@@ -109,7 +109,7 @@ namespace MpWeiXinCore.Services
 
         public static long ChangeTimeFormat(DateTime time)
         {
-            DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
             return (int)(time - startTime).TotalSeconds;
         }
 

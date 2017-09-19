@@ -120,7 +120,7 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "转换接收信息失败");
+                _logger.LogError("转换接收信息失败, 详细信息：{0}", ex.Message);
                 return null;
             }
         }

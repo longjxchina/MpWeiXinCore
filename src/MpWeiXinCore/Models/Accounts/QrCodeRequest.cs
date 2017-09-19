@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MpWeiXinCore.Models.Accounts
+﻿namespace MpWeiXinCore.Models.Accounts
 {
     /// <summary>
     /// 账号二维码请求

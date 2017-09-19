@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-
-namespace MpWeiXinCore.Models
+﻿namespace MpWeiXinCore.Models
 {
     /// <summary>
     /// 微信配置

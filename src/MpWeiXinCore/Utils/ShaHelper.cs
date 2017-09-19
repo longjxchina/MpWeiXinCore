@@ -22,8 +22,8 @@ namespace MpWeiXinCore.Utils
         /// <returns></returns>
         public static string Sha1(string source)
         {
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] bytes = Encoding.Default.GetBytes(source);
+            SHA1 sha = SHA1.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(source);
 
             return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-", "").ToLower();
         }

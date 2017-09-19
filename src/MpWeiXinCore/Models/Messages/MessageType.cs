@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MpWeiXinCore.Models.Messages
+﻿namespace MpWeiXinCore.Models.Messages
 {
     /// <summary>
     /// 消息类型

@@ -122,8 +122,8 @@ namespace MpWeiXinCore.Models
         /// <returns></returns>
         private string Encrypt(string source)
         {
-            var bytes = Encoding.Default.GetBytes(source);
-            var sha = new SHA1CryptoServiceProvider();
+            var bytes = Encoding.UTF8.GetBytes(source);
+            var sha = SHA1.Create();
 
             bytes = sha.ComputeHash(bytes);
 

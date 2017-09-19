@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MpWeiXinCore.Models.Events
+﻿namespace MpWeiXinCore.Models.Events
 {
     /// <summary>
     /// 事件类型
