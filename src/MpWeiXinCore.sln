@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MpWeiXinCore", "MpWeiXinCore\MpWeiXinCore.csproj", "{339427EE-0000-46A8-AB84-9393DE63FBA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MpWeiXinCore.Test", "MpWeiXinCore.Test\MpWeiXinCore.Test.csproj", "{CA4D5A74-17F4-4382-BC77-8B27EEE5282E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{339427EE-0000-46A8-AB84-9393DE63FBA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{339427EE-0000-46A8-AB84-9393DE63FBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{339427EE-0000-46A8-AB84-9393DE63FBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{339427EE-0000-46A8-AB84-9393DE63FBA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA4D5A74-17F4-4382-BC77-8B27EEE5282E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA4D5A74-17F4-4382-BC77-8B27EEE5282E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA4D5A74-17F4-4382-BC77-8B27EEE5282E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA4D5A74-17F4-4382-BC77-8B27EEE5282E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7466F1E-3AE5-4F7D-8FC4-839360D2C7CB}
+	EndGlobalSection
+EndGlobal
