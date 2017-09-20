@@ -17,13 +17,13 @@ namespace MpWeiXinCore.Services
         private IDistributedCache _cache;
         private ILogger<WxAccessTokenService> _logger;
         private WxConfig _config;
-        IOptions<WxConfig> _wxOption;
+        IOptionsSnapshot<WxConfig> _wxOption;
         private WxHelper _wxHelper;
 
         public WxAccessTokenService(
             IDistributedCache cache,
             ILogger<WxAccessTokenService> logger,
-            IOptions<WxConfig> wxOption,
+            IOptionsSnapshot<WxConfig> wxOption,
             WxHelper wxHelper)
         {
             _cache = cache;
@@ -48,7 +48,7 @@ namespace MpWeiXinCore.Services
                 // 调试模式，返回配置中的access token
                 if (isDebug)
                 {
-                    var result = _config.WxAccessToken;
+                    var result = _config.AccessToken;
 
                     if (!string.IsNullOrEmpty(result))
                     {
@@ -64,7 +64,7 @@ namespace MpWeiXinCore.Services
                 var tokenResult = _wxHelper.Send<AccessTokenResponse>(api);
 
                 if (tokenResult == null)
-                {
+                { 
                     return null;
                 }
                 else

@@ -66,10 +66,17 @@ namespace MpWeiXinCore.Services
 
             if (string.IsNullOrEmpty(token))
             {
-                var api = string.Format(JSAPI_TICKET_API, _accessTokenSvc.GetToken());
+                var accessToken = _accessTokenSvc.GetToken();
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return null;
+                }
+
+                var api = string.Format(JSAPI_TICKET_API, accessToken);
                 var ticket = _wxHelper.Send<JsApiTicket>(api, null, HttpMethod.Get);
 
-                if (ticket != null)
+                if (ticket != null && !ticket.HasError())
                 {
                     string theTicket = ticket.ticket;
 
@@ -102,6 +109,12 @@ namespace MpWeiXinCore.Services
             };
 
             var ticket = GetJsApiTicket();
+
+            if (ticket == null)
+            {
+                return null;
+            }
+
             var dicts = new Dictionary<string, string>();
 
             dicts.Add("noncestr", sign.NonceStr);

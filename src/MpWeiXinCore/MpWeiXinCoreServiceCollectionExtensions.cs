@@ -20,7 +20,7 @@ namespace MpWeiXinCore
             // Register the IConfiguration instance which MyOptions binds against.
             services.Configure<WxConfig>(configSection);
 
-            services.AddSingleton<WxHelper>();
+            services.AddTransient<WxHelper>();
             services.AddTransient<WxAccessTokenService>();
             services.AddTransient<WxJsSdkService>();
 

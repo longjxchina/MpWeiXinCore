@@ -10,7 +10,7 @@ namespace MpWeiXinCore.Models.AccessTokens
         private WxConfig _wxConfig;
 
         public AccessTokenRequest(
-            IOptions<WxConfig> wxOption)
+            IOptionsSnapshot<WxConfig> wxOption)
         {
             _wxConfig = wxOption.Value;
             grant_type = "client_credential";

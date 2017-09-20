@@ -28,6 +28,6 @@
         /// <summary>
         /// IsDebug为true时设置的AccessToken
         /// </summary>
-        public string WxAccessToken { get; set; }
+        public string AccessToken { get; set; }
     }
 }

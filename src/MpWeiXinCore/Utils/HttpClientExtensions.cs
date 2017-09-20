@@ -48,18 +48,14 @@ namespace MpWeiXinCore.Utils
 
                 // 如果请求返回错误信息，记录错误日志
                 if (result != null
-                    && result.errcode != null
-                    && result.errcode.ToString() != "0")
+                    && result.HasError())
                 {
-                    return result;
-                }
-                else
-                {
-                    // 读取失败，尝试转换为WxError
                     errorCallback?.Invoke(result);
 
                     return null;
                 }
+
+                return result;
             }
             catch (Exception ex)
             {
