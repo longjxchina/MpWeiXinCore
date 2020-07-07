@@ -1,36 +1,41 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PackageTags>mpweixin;weixin</PackageTags>
+    <Description>.net core 微信公众号api</Description>
+    <TargetFrameworks>netcoreapp3.1;$(DefaultNetCoreTargetFramework)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(DotNetBuildFromSource)' == 'true'">$(DefaultNetCoreTargetFramework)</TargetFrameworks>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>MpWeiXinCore</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <IsShipping>true</IsShipping>
+    <PackageId>MpWeiXinCore</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>longjxchina</Authors>
+    <Company>longjxchina</Company>
+    <PackageProjectUrl>https://github.com/longjxchina/MpWeiXinCore.git</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/longjxchina/MpWeiXinCore.git</RepositoryUrl>
+    <Copyright>MIT</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\Messages\**" />
-    <EmbeddedResource Remove="Services\Messages\**" />
-    <None Remove="Services\Messages\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Services\CustomerService.cs" />
-    <Compile Remove="Services\WxAccountService.cs" />
-    <Compile Remove="Services\WxMessageService.cs" />
-    <Compile Remove="Services\WxWebAuthService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.5" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
     <PackageReference Include="System.Security.Cryptography.Algorithms.Extensions" Version="1.0.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
+    <PackageReference Include="Easy.Common" Version="3.8.0" />
   </ItemGroup>
 
 </Project>

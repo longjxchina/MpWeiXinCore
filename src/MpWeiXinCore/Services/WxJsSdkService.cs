@@ -7,13 +7,13 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MpWeiXinCore.Models;
 using MpWeiXinCore.Models.JsSdks;
 using MpWeiXinCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MpWeiXinCore.Services
 {
@@ -32,11 +32,11 @@ namespace MpWeiXinCore.Services
         /// </summary>
         private const string JSAPI_TICKET__CACHE_KEY = "JSAPI_TICKET__CACHE_KEY";
 
-        private IDistributedCache _cache;
-        private ILogger<WxJsSdkService> _logger;
-        private WxAccessTokenService _accessTokenSvc;
-        private WxHelper _wxHelper;
-        private WxConfig _config;
+        private readonly IDistributedCache cache;
+        private readonly ILogger<WxJsSdkService> logger;
+        private readonly WxAccessTokenService accessTokenSvc;
+        private readonly WxHelper wxHelper;
+        private readonly MpWeiXinOptions config;
 
         /// <summary>
         /// ctor
@@ -44,63 +44,23 @@ namespace MpWeiXinCore.Services
         public WxJsSdkService(
             IDistributedCache cache,
             ILogger<WxJsSdkService> logger,
-            IOptions<WxConfig> wxOption,
+            IOptions<MpWeiXinOptions> wxOption,
             WxHelper wxHelper,
             WxAccessTokenService accessTokenSvc
             )
         {
-            _cache = cache;
-            _logger = logger;
-            _accessTokenSvc = accessTokenSvc;
-            _wxHelper = wxHelper;
-            _config = wxOption.Value;
-        }
-
-        /// <summary>
-        /// 获取js api ticket
-        /// </summary>
-        /// <returns>ticket</returns>
-        public string GetJsApiTicket()
-        {
-            string token = _cache.GetString(JSAPI_TICKET__CACHE_KEY);
-
-            if (string.IsNullOrEmpty(token))
-            {
-                var accessToken = _accessTokenSvc.GetToken();
-
-                if (string.IsNullOrEmpty(accessToken))
-                {
-                    return null;
-                }
-
-                var api = string.Format(JSAPI_TICKET_API, accessToken);
-                var ticket = _wxHelper.Send<JsApiTicket>(api, null, HttpMethod.Get);
-
-                if (ticket != null && !ticket.HasError())
-                {
-                    string theTicket = ticket.ticket;
-
-                    _cache.SetString(JSAPI_TICKET__CACHE_KEY, theTicket, new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ticket.expires_in)
-                    });
-
-                    _logger.LogInformation("获取JsApiTicket：{0}", theTicket);
-
-                    return ticket.ticket;
-                }
-
-                return null;
-            }
-            
-            return token;
+            this.cache = cache;
+            this.logger = logger;
+            this.accessTokenSvc = accessTokenSvc;
+            this.wxHelper = wxHelper;
+            config = wxOption.Value;
         }
 
         /// <summary>
         /// Gets the sign.
         /// </summary>
         /// <returns></returns>
-        public JsApiSign GetSignature(string url)
+        public async Task<JsApiSign> GetSignature(string url)
         {
             var sign = new JsApiSign
             {                
@@ -108,18 +68,19 @@ namespace MpWeiXinCore.Services
                 TimeStamp = GetTimeStamp(),
             };
 
-            var ticket = GetJsApiTicket();
+            var ticket = await GetJsApiTicket();
 
             if (ticket == null)
             {
                 return null;
             }
 
-            var dicts = new Dictionary<string, string>();
-
-            dicts.Add("noncestr", sign.NonceStr);
-            dicts.Add("jsapi_ticket", ticket);
-            dicts.Add("timestamp", sign.TimeStamp.ToString());
+            var dicts = new Dictionary<string, string>
+            {
+                { "noncestr", sign.NonceStr },
+                { "jsapi_ticket", ticket },
+                { "timestamp", sign.TimeStamp.ToString() }
+            };
 
             if (!string.IsNullOrEmpty(url))
             {
@@ -138,9 +99,49 @@ namespace MpWeiXinCore.Services
             var forSign = string.Join("&", arrSignature);
 
             sign.Signature = ShaHelper.Sha1(forSign);
-            sign.AppId = _config.AppId;
+            sign.AppId = config.AppId;
 
             return sign;
+        }
+
+        /// <summary>
+        /// 获取js api ticket
+        /// </summary>
+        /// <returns>ticket</returns>
+        private async Task<string> GetJsApiTicket()
+        {
+            string token = cache.GetString(JSAPI_TICKET__CACHE_KEY);
+
+            if (string.IsNullOrEmpty(token))
+            {
+                var accessToken = await accessTokenSvc.GetToken();
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return null;
+                }
+
+                var api = string.Format(JSAPI_TICKET_API, accessToken);
+                var ticket = await wxHelper.Send<JsApiTicket>(api, null, HttpMethod.Get);
+
+                if (ticket != null && !ticket.HasError())
+                {
+                    string theTicket = ticket.ticket;
+
+                    cache.SetString(JSAPI_TICKET__CACHE_KEY, theTicket, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ticket.expires_in)
+                    });
+
+                    logger.LogInformation("获取JsApiTicket：{0}", theTicket);
+
+                    return ticket.ticket;
+                }
+
+                return null;
+            }
+
+            return token;
         }
 
         /// <summary>

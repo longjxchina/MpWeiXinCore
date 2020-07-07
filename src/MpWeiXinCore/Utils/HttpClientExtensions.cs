@@ -1,9 +1,11 @@
-﻿using System;
-using System.Net.Http;
-using System.Xml.Serialization;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Easy.Common.Interfaces;
 using MpWeiXinCore.Models;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MpWeiXinCore.Utils
 {
@@ -19,32 +21,33 @@ namespace MpWeiXinCore.Utils
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="url">The URL.</param>
         /// <param name="requestContent">Content of the request.</param>
+        /// <param name="method">The method.</param>
         /// <param name="errorCallback">The error callback.</param>
         /// <param name="exceptionCallback">The exception callback.</param>
         /// <returns></returns>
-        public static TItem GetItem<TItem>(
-            this HttpClient httpClient,
+        public static async Task<TItem> GetItem<TItem>(
+            this IRestClient httpClient,
             string url,
             HttpContent requestContent,
             HttpMethod method = null,
             Action<WxError> errorCallback = null,
-            Action<HttpContent, Exception> exceptionCallback = null) where TItem : WxError
+            Action<string, Exception> exceptionCallback = null) where TItem : WxError
         {
             HttpContent responseContent = null;
             TItem result = null;
+            string responseBody = null;
 
             try
             {
-                responseContent = GetResponse(httpClient, url, requestContent, method);
+                responseContent = await GetResponse(httpClient, url, requestContent, method);
 
                 if (responseContent.Headers.ContentType.MediaType.ToLower() == "text/plain")
                 {
                     responseContent.Headers.ContentType.MediaType = "application/json";
                 }
 
-                string json = responseContent.ReadAsStringAsync().Result;
-
-                result = JsonConvert.DeserializeObject<TItem>(json);
+                responseBody = await responseContent.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<TItem>(responseBody);
 
                 // 如果请求返回错误信息，记录错误日志
                 if (result != null
@@ -59,7 +62,7 @@ namespace MpWeiXinCore.Utils
             }
             catch (Exception ex)
             {
-                exceptionCallback?.Invoke(responseContent, ex);
+                exceptionCallback?.Invoke(responseBody ?? ex.Message, ex);
                 return null;
             }
         }
@@ -71,14 +74,17 @@ namespace MpWeiXinCore.Utils
         /// <param name="httpClient">The HTTP client.</param>
         /// <param name="url">The URL.</param>
         /// <param name="requestContent">Content of the request.</param>
-        /// <param name="callback">The callback.</param>
+        /// <param name="errorCallback">The error callback.</param>
         /// <returns></returns>
-        public static TItem GetXmlItem<TItem>(this HttpClient httpClient, string url, HttpContent requestContent, Action<Exception> errorCallback = null) where TItem : class
+        public static async Task<TItem> GetXmlItem<TItem>(
+            this IRestClient httpClient,
+            string url, HttpContent requestContent,
+            Action<Exception> errorCallback = null) where TItem : class
         {
             try
             {
-                var responseContent = GetResponse(httpClient, url, requestContent);
-                string xml = responseContent.ReadAsStringAsync().Result;
+                var responseContent = await GetResponse(httpClient, url, requestContent);
+                string xml = await responseContent.ReadAsStringAsync();
 
                 var type = typeof(TItem);
                 var serializer = new XmlSerializer(type);
@@ -107,40 +113,27 @@ namespace MpWeiXinCore.Utils
         /// <returns>
         /// 响应
         /// </returns>
-        public static HttpContent GetResponse(
-            this HttpClient httpClient,
+        public static async Task<HttpContent> GetResponse(
+            this IRestClient httpClient,
             string url,
             HttpContent requestContent = null,
             HttpMethod method = null)
         {
-            try
+            HttpResponseMessage response;
+
+            method ??= HttpMethod.Post;
+
+            // get请求
+            if (method.Equals(HttpMethod.Get))
             {
-                HttpResponseMessage response;
-
-                method = method ?? HttpMethod.Post;
-
-                // get请求
-                if (method.Equals(HttpMethod.Get))
-                {
-                    response = httpClient.GetAsync(url).Result;
-                }
-                else // post请求
-                {
-                    response = httpClient.PostAsync(url, requestContent).Result;
-                }
-
-                // 请求成功
-                if (response.IsSuccessStatusCode)
-                {
-                    return response.Content;
-                }
+                response = await httpClient.GetAsync(url);
             }
-            catch (Exception ex)
+            else // post请求
             {
-                throw ex;
+                response = await httpClient.PostAsync(url, requestContent);
             }
 
-            return null;
+            return response.Content;
         }
     }
 }

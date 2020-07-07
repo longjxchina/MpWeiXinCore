@@ -12,22 +12,6 @@ namespace MpWeiXinCore.Models.JsSdks
     public class JsApiTicket : WxError
     {
         /// <summary>
-        /// Gets or sets the errcode.
-        /// </summary>
-        /// <value>
-        /// The errcode.
-        /// </value>
-        public string errcode { get; set; }
-
-        /// <summary>
-        /// Gets or sets the errmsg.
-        /// </summary>
-        /// <value>
-        /// The errmsg.
-        /// </value>
-        public string errmsg { get; set; }
-
-        /// <summary>
         /// Gets or sets the ticket.
         /// </summary>
         /// <value>

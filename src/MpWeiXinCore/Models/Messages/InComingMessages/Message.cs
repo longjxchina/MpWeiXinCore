@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-
-using MpWeiXinCore.Utils;
-using Microsoft.Extensions.Logging;
 
 namespace MpWeiXinCore.Models.Messages.InComingMessages
 {
@@ -25,6 +23,7 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
         public string OriginMessage
         {
             get;
+            private set;
         }
 
         /// <summary>
@@ -71,8 +70,7 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
         {
             get
             {
-                var res = MessageType.None;
-
+                MessageType res;
                 Enum.TryParse(MsgType, true, out res);
 
                 return res;
@@ -89,16 +87,13 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
             _logger = logger;
         }
 
-        public Message(
-            string message,
-            ILogger<Message> logger)
-            : this(logger)
+        #endregion
+
+        public virtual void Init(string message)
         {
             OriginMessage = message;
             MsgType = GetMessageProperty(MSG_TYPE);
         }
-
-        #endregion
 
         /// <summary>
         /// 获取实际的消息

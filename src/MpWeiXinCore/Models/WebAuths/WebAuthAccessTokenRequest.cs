@@ -7,21 +7,19 @@ namespace MpWeiXinCore.Models.WebAuths
     /// </summary>
     public class WebAuthAccessTokenRequest
     {
-        private WxConfig _config;
+        private MpWeiXinOptions config;
         public const string grant_type = "authorization_code";
         public string appid { get; set; }
         public string secret { get; set; }
         public string code { get; set; }
 
-        public WebAuthAccessTokenRequest(
-            string requestCode,
-            IOptions<WxConfig> wxOption
+        public WebAuthAccessTokenRequest(            
+            IOptions<MpWeiXinOptions> wxOption
             )
         {
-            code = requestCode;
-            _config = wxOption.Value;
-            appid = _config.AppId;
-            secret = _config.AppSecret;
+            config = wxOption.Value;
+            appid = config.AppId;
+            secret = config.AppSecret;
         }
     }
 }

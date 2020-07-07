@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace MpWeiXinCore.Services.Messages
 {
+    /// <summary>
+    /// 上下文消息管理
+    /// </summary>
     public class ContextMessageManager
     {
         /// <summary>
@@ -18,45 +21,43 @@ namespace MpWeiXinCore.Services.Messages
         /// <summary>
         /// 缓存管理对象
         /// </summary>
-        private IDistributedCache _cache;
+        private readonly IDistributedCache cache;
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        private ContextMessageManager(
+        public ContextMessageManager(
             IDistributedCache cache)
         {
-            _cache = cache;
+            this.cache = cache;
             Messages = new Dictionary<string, ContextMessage>();
         }
 
         /// <summary>
         /// 添加消息
         /// </summary>
+        /// <param name="openId">The open identifier.</param>
         /// <param name="context">The context.</param>
-        /// <param name="contextMessage">The context message.</param>
+        /// <param name="message">The message.</param>
         public void SetContextMessage(string openId, string context, Message message)
         {
             if (!Messages.ContainsKey(openId))
             {
-                var messageList = new ContextMessage();
-
-                messageList.Context = context;
+                var messageList = new ContextMessage
+                {
+                    Context = context
+                };
                 messageList.Messages.Add(message);
 
                 Messages.Add(openId, messageList);
 
-                _cache.SetString(
+                cache.SetString(
                     openId,
                     openId,
                     new DistributedCacheEntryOptions()
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
                     });
-                    //(args) =>
-                    //{
-                    //    Messages.Remove(openId);
-                    //});
             }
             else
             {
@@ -70,7 +71,7 @@ namespace MpWeiXinCore.Services.Messages
         /// <param name="openId">The context.</param>
         public void RemoveContextMessage(string openId)
         {
-            _cache.Remove(openId);
+            cache.Remove(openId);
         }
 
         /// <summary>

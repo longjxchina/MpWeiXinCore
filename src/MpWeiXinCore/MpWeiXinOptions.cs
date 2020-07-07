@@ -1,9 +1,9 @@
-﻿namespace MpWeiXinCore.Models
+﻿namespace MpWeiXinCore
 {
     /// <summary>
-    /// 微信配置
+    /// 配置选项
     /// </summary>
-    public class WxConfig
+    public class MpWeiXinOptions
     {
         /// <summary>
         /// 微信app id

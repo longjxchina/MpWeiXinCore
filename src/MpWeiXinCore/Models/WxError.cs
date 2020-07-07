@@ -28,7 +28,7 @@
                 return false;
             }
 
-            return !(errcode == "0");
+            return !("0" == errcode);
         }
     }
 }

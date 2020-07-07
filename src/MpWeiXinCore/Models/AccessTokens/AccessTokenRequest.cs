@@ -7,15 +7,15 @@ namespace MpWeiXinCore.Models.AccessTokens
     /// </summary>
     public class AccessTokenRequest
     {
-        private WxConfig _wxConfig;
+        private MpWeiXinOptions _MpWeiXinOptions;
 
         public AccessTokenRequest(
-            IOptionsSnapshot<WxConfig> wxOption)
+            IOptions<MpWeiXinOptions> wxOption)
         {
-            _wxConfig = wxOption.Value;
+            _MpWeiXinOptions = wxOption.Value;
             grant_type = "client_credential";
-            appid = _wxConfig.AppId;
-            secret = _wxConfig.AppSecret;
+            appid = _MpWeiXinOptions.AppId;
+            secret = _MpWeiXinOptions.AppSecret;
         }
 
         /// <summary>

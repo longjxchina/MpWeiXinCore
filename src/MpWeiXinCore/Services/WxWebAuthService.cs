@@ -1,6 +1,7 @@
-﻿using MpWeiXinCore.Models;
+﻿using Microsoft.Extensions.Options;
 using MpWeiXinCore.Models.WebAuths;
 using System;
+using System.Threading.Tasks;
 
 namespace MpWeiXinCore.Services
 {
@@ -16,29 +17,41 @@ namespace MpWeiXinCore.Services
         private const string AUTH_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={0}&redirect_uri={1}&response_type=code&scope={2}&state={3}#wechat_redirect";
 
         private const string CACHE_KEY_AUTH_TOKEN = "AUTH_TOKEN";
+        private readonly WxHelper wxHelper;
+        private readonly MpWeiXinOptions config;
+        private readonly WebAuthAccessTokenRequest webAuthAccessTokenRequest;
+
+        public WxWebAuthService(
+            WxHelper wxHelper,
+            IOptions<MpWeiXinOptions> wxOption, 
+            WebAuthAccessTokenRequest webAuthAccessTokenRequest)
+        {
+            this.wxHelper = wxHelper;
+            config = wxOption.Value;
+            this.webAuthAccessTokenRequest = webAuthAccessTokenRequest;
+        }
 
         /// <summary>
         /// 获取Access Token
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns></returns>
-        public static WebAuthAccessTokenResponse GetAccessToken(string code)
+        public Task<WebAuthAccessTokenResponse> GetAccessToken(string code)
         {
-            var request = new WebAuthAccessTokenRequest(code);
+            webAuthAccessTokenRequest.code = code;
+
             var requestUrl = string.Format(ACCESS_TOKEN_API
-                                           , WebAuthAccessTokenRequest.appid
-                                           , WebAuthAccessTokenRequest.secret
-                                           , request.code
+                                           , webAuthAccessTokenRequest.appid
+                                           , webAuthAccessTokenRequest.secret
+                                           , webAuthAccessTokenRequest.code
                                            , WebAuthAccessTokenRequest.grant_type);
 
-            var response = WxHelper.Send<WebAuthAccessTokenResponse>(requestUrl);
-
-            return response;
+            return wxHelper.Send<WebAuthAccessTokenResponse>(requestUrl);
         }
 
-        public static string GetAuthUrl(string url, string scope)
+        public string GetAuthUrl(string url, string scope)
         {
-            return string.Format(AUTH_URL, WxConfig.AppId, url, scope, Guid.NewGuid().ToString("N"));
+            return string.Format(AUTH_URL, config.AppId, url, scope, Guid.NewGuid().ToString("N"));
         }
 
         /// <summary>
@@ -46,10 +59,10 @@ namespace MpWeiXinCore.Services
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns></returns>
-        public static WxMessage<UserInfoResponse> GetUserInfo(string code)
+        public async Task<WxMessage<UserInfoResponse>> GetUserInfo(string code)
         {
             var result = new WxMessage<UserInfoResponse>();
-            var accessTokenResp = GetAccessToken(code);           
+            var accessTokenResp = await GetAccessToken(code);
 
             if (accessTokenResp == null || !string.IsNullOrEmpty(accessTokenResp.errcode))
             {
@@ -67,7 +80,7 @@ namespace MpWeiXinCore.Services
                                            accessTokenResp.access_token,
                                            accessTokenResp.openid);
 
-            var response = WxHelper.Send<UserInfoResponse>(requestUrl);
+            var response = await wxHelper.Send<UserInfoResponse>(requestUrl);
 
             result.Data = response;
 

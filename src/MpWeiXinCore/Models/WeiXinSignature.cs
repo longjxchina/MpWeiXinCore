@@ -8,15 +8,15 @@ namespace MpWeiXinCore.Models
 {
     public class WeiXinSignature
     {
-        private HttpRequest _request;
-        private WxConfig _config;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly MpWeiXinOptions config;
 
         public WeiXinSignature(
-            HttpRequest request,
-            IOptions<WxConfig> wxOption)
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<MpWeiXinOptions> wxOption)
         {
-            _request = request;
-            _config = wxOption.Value;
+            this.httpContextAccessor = httpContextAccessor;
+            config = wxOption.Value;
         }
 
         #region 变量区
@@ -51,7 +51,7 @@ namespace MpWeiXinCore.Models
         {
             get
             {
-                return _request.Query[QS_SIGNATURE].ToString();
+                return httpContextAccessor.HttpContext.Request.Query[QS_SIGNATURE].ToString();
             }
         }
 
@@ -65,7 +65,7 @@ namespace MpWeiXinCore.Models
         {
             get
             {
-                return _request.Query[QS_NONCE].ToString();
+                return httpContextAccessor.HttpContext.Request.Query[QS_NONCE].ToString();
             }
         }
 
@@ -79,7 +79,7 @@ namespace MpWeiXinCore.Models
         {
             get
             {
-                return _request.Query[QS_TIMESTAMP].ToString();
+                return httpContextAccessor.HttpContext.Request.Query[QS_TIMESTAMP].ToString();
             }
         }
 
@@ -93,7 +93,7 @@ namespace MpWeiXinCore.Models
         {
             get
             {
-                return _request.Query[QS_ECHOSTR].ToString();
+                return httpContextAccessor.HttpContext.Request.Query[QS_ECHOSTR].ToString();
             }
         }
 
@@ -105,7 +105,7 @@ namespace MpWeiXinCore.Models
         /// <returns></returns>
         public bool ValidateSignature()
         {
-            var arrParams = new string[] { _config.Token, Timestamp, Nonce };
+            var arrParams = new string[] { config.Token, Timestamp, Nonce };
 
             Array.Sort(arrParams);
 

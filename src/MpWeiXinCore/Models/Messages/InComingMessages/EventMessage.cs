@@ -14,15 +14,15 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
     {
         private const string EVENT = "Event";
 
-        public EventMessage(ILogger<Message> logger)
+        public EventMessage(ILogger<EventMessage> logger)
             : base(logger)
         {
 
         }
 
-        public EventMessage(string originMessage, ILogger<Message> logger)
-            : base(originMessage, logger)
+        public override void Init(string message)
         {
+            base.Init(message);
             Event = GetMessageProperty(EVENT);
         }
 

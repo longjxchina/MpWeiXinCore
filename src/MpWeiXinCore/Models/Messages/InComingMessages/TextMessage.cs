@@ -45,9 +45,10 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
 
         }
 
-        public TextMessage(string originMessage, ILogger<Message> logger)
-            : base(originMessage, logger)
+        public override void Init(string message)
         {
+            base.Init(message);
+
             Content = GetMessageProperty(Content);
             MsgId = Convert.ToInt64(GetMessageProperty(MSG_ID));
         }

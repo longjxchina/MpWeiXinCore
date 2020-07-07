@@ -1,5 +1,6 @@
 ﻿using MpWeiXinCore.Models;
 using MpWeiXinCore.Models.CustomerServices;
+using System.Threading.Tasks;
 
 namespace MpWeiXinCore.Services
 {
@@ -10,23 +11,26 @@ namespace MpWeiXinCore.Services
     {
         public const string SEND_API = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={0}";
 
-        private WxAccessTokenService _tokenSvc;
+        private readonly WxAccessTokenService tokenSvc;
+        private readonly WxHelper wxHelper;
 
         public CustomerService(
-            WxAccessTokenService tokenSvc)
+            WxAccessTokenService tokenSvc,
+            WxHelper wxHelper)
         {
-            _tokenSvc = tokenSvc;
+            this.tokenSvc = tokenSvc;
+            this.wxHelper = wxHelper;
         }
 
         /// <summary>
         /// 发送消息
         /// </summary>
         /// <param name="message">The message.</param>
-        public WxError Send(CustomerMessage message)
+        public Task<WxError> Send(CustomerMessage message)
         {
-            var api = string.Format(SEND_API, _tokenSvc.GetToken());
+            var api = string.Format(SEND_API, tokenSvc.GetToken());
 
-            return WxHelper.Send<WxError>(api, message);
+            return wxHelper.Send<WxError>(api, message);
         }
     }
 }

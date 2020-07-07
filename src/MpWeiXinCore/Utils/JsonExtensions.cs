@@ -17,12 +17,14 @@ namespace MpWeiXinCore.Utils
         /// <summary>
         /// 反序列化对象
         /// </summary>
-        /// <typeparam name="T">object</typeparam>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="value">json字符串</param>
-        /// <returns>返回实例对象</returns>
+        /// <returns>
+        /// 返回实例对象
+        /// </returns>
         public static TObject ToObject<TObject>(this string value)
         {
-            TObject result = default(TObject);
+            TObject result = default;
             if (typeof(TObject) == typeof(string))
             {
                 object tempSwap = (object)value;

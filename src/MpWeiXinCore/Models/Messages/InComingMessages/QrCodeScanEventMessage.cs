@@ -9,6 +9,10 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
     [Serializable]
     public class QrCodeScanEventMessage : EventMessage
     {
+        public QrCodeScanEventMessage(ILogger<QrCodeScanEventMessage> logger) : base(logger)
+        {
+        }
+
         /// <summary>
         /// 二维码的ticket，可用来换取二维码图片
         /// </summary>
@@ -27,7 +31,6 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
         {
             get
             {
-                var scene = -1;
                 var strScene = EventKey;
                 var prefix = "qrscene_";
 
@@ -38,20 +41,10 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
                     _logger.LogDebug("新值:" + strScene);
                 }
 
-                int.TryParse(strScene, out scene);
+                int.TryParse(strScene, out int scene);
 
                 return scene;
             }
         }
-
-        public QrCodeScanEventMessage(
-            ILogger<QrCodeScanEventMessage> logger)
-            : base(logger)
-        {
-        }
-
-        public QrCodeScanEventMessage(string originMessage, ILogger<Message> logger)
-            : base(originMessage, logger)
-            { }
     }
 }
