@@ -69,7 +69,7 @@ namespace MpWeiXinCore.Services
         private async Task<string> GetQrCodeTicket(int sceneId)
         {
             const int expire = 10;
-            var api = string.Format(TEMP_QR_CODE_TICKET_API, wxAccessTokenService.GetToken());
+            var api = string.Format(TEMP_QR_CODE_TICKET_API, await wxAccessTokenService.GetToken());
             var request = new QrCodeRequest()
             {   
                 expire_seconds = expire,
@@ -135,7 +135,8 @@ namespace MpWeiXinCore.Services
                 return false;
             }
 
-            var api = string.Format(USER_INFO_API, accessTokenSvc.GetToken(), openId);
+            var token = await accessTokenSvc.GetToken();
+            var api = string.Format(USER_INFO_API, token, openId);
             var userInfo = await wxHelper.Send<UserInfo>(api, null, HttpMethod.Get);
 
             logger.LogInformation($"获取用户信息：{userInfo?.ToJson()}");

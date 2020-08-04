@@ -26,11 +26,11 @@ namespace MpWeiXinCore.Services
         /// 发送消息
         /// </summary>
         /// <param name="message">The message.</param>
-        public Task<WxError> Send(CustomerMessage message)
+        public async Task<WxError> Send(CustomerMessage message)
         {
-            var api = string.Format(SEND_API, tokenSvc.GetToken());
+            var api = string.Format(SEND_API, await tokenSvc.GetToken());
 
-            return wxHelper.Send<WxError>(api, message);
+            return await wxHelper.Send<WxError>(api, message);
         }
     }
 }
