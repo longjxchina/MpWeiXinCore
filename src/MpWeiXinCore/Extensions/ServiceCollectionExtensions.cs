@@ -1,7 +1,6 @@
 ﻿using Easy.Common;
 using Easy.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MpWeiXinCore.Models;
 using MpWeiXinCore.Models.AccessTokens;

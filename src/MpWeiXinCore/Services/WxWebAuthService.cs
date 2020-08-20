@@ -11,12 +11,9 @@ namespace MpWeiXinCore.Services
     public class WxWebAuthService
     {
         private const string ACCESS_TOKEN_API = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type={3}";
-
         private const string USER_INFO_API = "https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN";
-
         private const string AUTH_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={0}&redirect_uri={1}&response_type=code&scope={2}&state={3}#wechat_redirect";
 
-        private const string CACHE_KEY_AUTH_TOKEN = "AUTH_TOKEN";
         private readonly WxHelper wxHelper;
         private readonly MpWeiXinOptions config;
         private readonly WebAuthAccessTokenRequest webAuthAccessTokenRequest;
@@ -49,6 +46,12 @@ namespace MpWeiXinCore.Services
             return wxHelper.Send<WebAuthAccessTokenResponse>(requestUrl);
         }
 
+        /// <summary>
+        /// 获取网页授权链接
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="scope">The scope.</param>
+        /// <returns></returns>
         public string GetAuthUrl(string url, string scope)
         {
             return string.Format(AUTH_URL, config.AppId, url, scope, Guid.NewGuid().ToString("N"));
