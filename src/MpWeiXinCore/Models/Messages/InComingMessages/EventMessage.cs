@@ -14,6 +14,8 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
     {
         private const string EVENT = "Event";
 
+        protected EventMessage() { }
+
         public EventMessage(ILogger<EventMessage> logger)
             : base(logger)
         {

@@ -23,7 +23,7 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
         public string OriginMessage
         {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
@@ -80,6 +80,7 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
         #endregion
 
         #region 构造函数
+        protected Message() { }
 
         public Message(
             ILogger<Message> logger)

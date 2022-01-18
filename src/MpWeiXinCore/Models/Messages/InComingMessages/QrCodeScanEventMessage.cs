@@ -9,6 +9,11 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
     [Serializable]
     public class QrCodeScanEventMessage : EventMessage
     {
+        public QrCodeScanEventMessage()
+        {
+
+        }
+
         public QrCodeScanEventMessage(ILogger<QrCodeScanEventMessage> logger) : base(logger)
         {
         }

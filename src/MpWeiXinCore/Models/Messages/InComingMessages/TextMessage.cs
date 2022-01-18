@@ -39,6 +39,11 @@ namespace MpWeiXinCore.Models.Messages.InComingMessages
 
         #endregion
 
+        public TextMessage()
+        {
+
+        }
+
         public TextMessage(ILogger<Message> logger)
             : base(logger)
         {
