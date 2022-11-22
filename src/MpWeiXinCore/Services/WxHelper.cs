@@ -6,6 +6,7 @@ using MpWeiXinCore.Models.Messages.InComingMessages;
 using MpWeiXinCore.Models.Messages.ReplyMessages;
 using MpWeiXinCore.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -24,7 +25,7 @@ namespace MpWeiXinCore.Services
         private readonly IRestClient restClient;
 
         public WxHelper(
-            ILogger<WxHelper> logger, 
+            ILogger<WxHelper> logger,
             IRestClient restClient)
         {
             this.logger = logger;
@@ -44,9 +45,9 @@ namespace MpWeiXinCore.Services
             void errCallBack(WxError error)
             {
                 var errMsg = string.Format(
-                    "请求出错{0}，错误代码：{0}，错误消息：{1}", 
-                    api, 
-                    error?.errcode, 
+                    "请求出错{0}，错误代码：{0}，错误消息：{1}",
+                    api,
+                    error?.errcode,
                     error?.errmsg);
 
                 logger.LogError(errMsg);
@@ -132,6 +133,24 @@ namespace MpWeiXinCore.Services
             };
 
             return msg;
+        }
+
+        /// <summary>
+        /// 回复图文消息
+        /// </summary>        
+        /// <returns></returns>
+        public string ReplyNewsMessage(Message fromMsg, List<NewsArticle> articles)
+        {
+            var msg = new ReplyNewsMessage
+            {
+                ToUserName = fromMsg.FromUserName,
+                FromUserName = fromMsg.ToUserName,
+                CreateTime = ChangeTimeFormat(DateTime.Now),
+                MsgType = MessageType.News.ToString().ToLower(),
+                Articles = articles
+            };
+
+            return FormatMessage(msg);
         }
     }
 }

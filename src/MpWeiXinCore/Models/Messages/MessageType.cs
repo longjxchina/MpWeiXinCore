@@ -8,5 +8,6 @@
         None = 0,
         Event = 1,
         Text = 2,
+        News = 3
     }
 }

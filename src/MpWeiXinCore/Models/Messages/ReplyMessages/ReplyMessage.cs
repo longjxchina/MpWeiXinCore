@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace MpWeiXinCore.Models.Messages.ReplyMessages
 {
-    [Serializable]    
+    [Serializable]
     public class ReplyMessage
     {
         #region 原始属性
