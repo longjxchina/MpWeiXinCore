@@ -11,12 +11,14 @@ namespace MpWeiXinCore.Models.Messages.ReplyMessages
         [XmlArrayItem("item")]
         public List<NewsArticle> Articles { get; set; } = new List<NewsArticle>();
 
+        [XmlElement(nameof(ArticleCount))]
         public int ArticleCount 
         { 
             get 
             { 
                 return Articles.Count; 
             } 
+            set { }
         }
     }
 }
