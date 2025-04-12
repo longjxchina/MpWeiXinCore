@@ -6,7 +6,7 @@ namespace MpWeiXinCore.Test
     public class WxAccessTokenServiceTest
     {
         [TestMethod]
-        public async void GetTokenTest()
+        public void GetTokenTest()
         {
             
         }

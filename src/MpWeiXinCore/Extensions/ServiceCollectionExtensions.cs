@@ -7,6 +7,7 @@ using MpWeiXinCore.Models.AccessTokens;
 using MpWeiXinCore.Models.Messages.InComingMessages;
 using MpWeiXinCore.Models.WebAuths;
 using MpWeiXinCore.Services;
+using MpWeiXinCore.Services.CustomerMessages;
 using MpWeiXinCore.Services.Messages;
 using System;
 
@@ -42,6 +43,7 @@ namespace MpWeiXinCore.Extensions
             services.AddSingleton<AccessTokenRequest>();
             services.AddSingleton<WebAuthAccessTokenRequest>();
             services.AddSingleton<IRestClient, RestClient>();
+            services.AddSingleton<CustomerMessageService>();
         }
     }
 }

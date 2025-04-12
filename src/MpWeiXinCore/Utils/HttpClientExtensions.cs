@@ -1,9 +1,12 @@
 ﻿using Easy.Common.Interfaces;
+using Microsoft.Extensions.Logging;
 using MpWeiXinCore.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Text.Unicode;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -12,8 +15,11 @@ namespace MpWeiXinCore.Utils
     /// <summary>
     /// httpclient扩展
     /// </summary>
-    internal static class HttpClientExtensions
+    public static class HttpClientExtensions
     {
+        private const string UTF8 = "utf-8";
+        private const string APPLICATION_JSON = "application/json";
+
         /// <summary>
         /// Gets the item.
         /// </summary>
@@ -134,6 +140,71 @@ namespace MpWeiXinCore.Utils
             }
 
             return response.Content;
+        }
+
+        public static async Task<TItem> PostAsJsonAsync<TItem>(
+            this IRestClient httpClient,
+            string url,
+            object parameters,
+            ILogger logger = null) where TItem : class
+        {
+            using var content = new StringContent(parameters?.ToJson() ?? string.Empty, Encoding.GetEncoding(UTF8), APPLICATION_JSON);
+
+            return await httpClient.PostAsAsync<TItem>(url, content, logger);
+        }
+
+        public static async Task<TItem> PostAsAsync<TItem>(
+            this IRestClient httpClient,
+            string url,
+            HttpContent content,
+            ILogger logger = null,
+            Action<Exception> errorHandler = null) where TItem : class
+        {
+            try
+            {
+                var response = await httpClient.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (await response.Content.ReadAsStringAsync()).ToObject<TItem>();
+                }
+                else
+                {
+                    await LogError(logger, url, response, errorHandler);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError(logger, url, ex);
+                return null;
+            }
+        }
+
+        private static async Task LogError(
+            ILogger logger,
+            string url,
+            HttpResponseMessage response,
+            Action<Exception> errorHandler = null)
+        {
+            string msg = string.Format("请求失败 {0}，Status: {1}，响应：{2}",
+                        url,
+                        response.StatusCode,
+                        await response.Content.ReadAsStringAsync());
+
+            logger?.LogError(msg);
+            errorHandler?.Invoke(new Exception(msg));
+        }
+
+        private static void LogError(
+            ILogger logger,
+            string url,
+            Exception exception,
+            Action<Exception> errorHandler = null)
+        {
+            logger?.LogError(exception, "请求:{url}失败，错误信息：{ex}", url, exception.Message);
+
+            errorHandler?.Invoke(exception);
         }
     }
 }
